@@ -20,7 +20,7 @@ document.getElementById('login-button').onclick = function () {
     auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then((result) => {
         user = result.user;
         toggleUI(true);
-        document.getElementById('user-name').innerText = `Welcome, ${user.displayName}`;
+        document.getElementById('user-name').innerText = `${user.displayName}`;
         initGame();
     }).catch((error) => {
         console.error("Error during sign in: ", error);
@@ -31,7 +31,7 @@ auth.onAuthStateChanged((u) => {
     if (u) {
         user = u;
         toggleUI(true);
-        document.getElementById('user-name').innerText = `Welcome, ${user.displayName}`;
+        document.getElementById('user-name').innerText = `${user.displayName}`;
         initGame();
     } else {
         toggleUI(false);
