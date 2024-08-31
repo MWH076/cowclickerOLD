@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <!-- Meta -->
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta content="Cow Clicker" property="og:title" />
+    <meta content="Cow Clicker, a clicker game." property="og:description" />
+    <meta content="https://MWH076.github.io/cowclicker/" property="og:url" />
+    <meta content="https://em-content.zobj.net/source/microsoft-teams/363/cow-face_1f42e.png" property="og:image" />
+    <meta content="#FF90AA" data-react-helmet="true" name="theme-color" />
+
+    <!-- Tab -->
+    <link rel="icon" type="image/x-icon" href="cow.png">
+    <title>Cow Clicker</title>
+
+    <!-- Styles -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f0f0f0;
+        }
+
+        #cow {
+            width: 200px;
+            cursor: pointer;
+        }
+
+        #score {
+            font-size: 24px;
+            margin-top: 20px;
+        }
+
+        #leaderboard {
+            margin-top: 50px;
+        }
+
+        #settings {
+            margin-top: 30px;
+        }
+    </style>
+
+    <!-- Scripts -->
+    <!-- None for now :D -->
+</head>
+
+<body>
+    <h1>Cow Clicker</h1>
+    <p id="score">Clicks: 0</p>
+    <img id="cow" src="cow.png" alt="Click me!">
+    
+    <div id="leaderboard">
+        <h2>Leaderboard</h2>
+        <ul id="leaderboard-list"></ul>
+    </div>
+
+    <div id="settings">
+        <h2>Settings</h2>
+        <input type="text" id="username" placeholder="New Username">
+        <button onclick="updateUsername()">Change Username</button>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
+
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyDbxQzbE-oSgGacOpxHV8_u2TriYuO3S_8",
+            authDomain: "cowclicker-29d15.firebaseapp.com",
+            projectId: "cowclicker-29d15",
+            storageBucket: "cowclicker-29d15.appspot.com",
+            messagingSenderId: "354895804573",
+            appId: "1:354895804573:web:099246aa7761791ed3bc74"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        let user;
+        let clicks = 0;
+
+        auth.onAuthStateChanged((u) => {
+            if (u) {
+                user = u;
+                initGame();
+            } else {
+                auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
+            }
+        });
+
+        function initGame() {
+            db.collection('users').doc(user.uid).get().then(doc => {
+                if (doc.exists) {
+                    clicks = doc.data().clicks;
+                    updateScore();
+                }
+            });
+            loadLeaderboard();
+        }
+
+        document.getElementById('cow').onclick = function () {
+            clicks++;
+            updateScore();
+            db.collection('users').doc(user.uid).set({
+                username: user.displayName,
+                clicks: clicks
+            });
+        };
+
+        function updateScore() {
+            document.getElementById('score').innerText = `Clicks: ${clicks}`;
+        }
+
+        function loadLeaderboard() {
+            db.collection('users').orderBy('clicks', 'desc').limit(10).get().then(snapshot => {
+                const leaderboardList = document.getElementById('leaderboard-list');
+                leaderboardList.innerHTML = '';
+                snapshot.forEach(doc => {
+                    const data = doc.data();
+                    const listItem = document.createElement('li');
+                    listItem.innerText = `${data.username}: ${data.clicks}`;
+                    leaderboardList.appendChild(listItem);
+                });
+            });
+        }
+
+        function updateUsername() {
+            const newUsername = document.getElementById('username').value;
+            if (newUsername) {
+                db.collection('users').where('username', '==', newUsername).get().then(snapshot => {
+                    if (snapshot.empty) {
+                        db.collection('users').doc(user.uid).update({
+                            username: newUsername
+                        }).then(() => {
+                            loadLeaderboard();
+                        });
+                    } else {
+                        alert('Username already taken.');
+                    }
+                });
+            }
+        }
+    </script>
+</body>
+
+</html>
