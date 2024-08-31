@@ -12,7 +12,7 @@
     <meta content="#FF90AA" data-react-helmet="true" name="theme-color" />
 
     <!-- Tab -->
-    <link rel="icon" type="image/x-icon" href="cow.png">
+    <link rel="icon" type="image/x-icon" href="Assets/Images/cow.png">
     <title>Cow Clicker</title>
 
     <!-- Styles -->
@@ -26,40 +26,41 @@
 </head>
 
 <body>
-    <div id="login-container">
-        <button id="login-button">Login with Google</button>
+    <div id="login-container" class="d-flex justify-content-center align-items-center vh-100">
+        <button id="login-button" class="btn btn-primary">Login with Google</button>
     </div>
 
-    <div id="app-container">
-        <header>
-            <h1>Cow Clicker</h1>
-            <div class="user-info">
-                <span id="user-name"></span>
-                <button class="logout-btn" onclick="logout()">Logout</button>
+    <div id="app-container" class="container" style="display: none;">
+        <header class="d-flex justify-content-between align-items-center py-3">
+            <h1 class="h3">Cow Clicker</h1>
+            <div class="user-info d-flex align-items-center">
+                <span id="user-name" class="me-3"></span>
+                <button class="btn btn-outline-danger" onclick="logout()">Logout</button>
             </div>
         </header>
 
-        <div id="content">
-            <div id="leaderboard" class="box">
-                <h2>Leaderboard</h2>
-                <ul id="leaderboard-list"></ul>
-                <button id="refresh-leaderboard-btn" onclick="loadLeaderboard()">Refresh Leaderboard</button>
+        <div id="content" class="row">
+            <div id="leaderboard" class="box col-md-4">
+                <h2 class="h5">Leaderboard</h2>
+                <ul id="leaderboard-list" class="list-group list-group-flush"></ul>
+                <button id="refresh-leaderboard-btn" class="btn btn-outline-primary mt-3"
+                    onclick="loadLeaderboard()">Refresh Leaderboard</button>
             </div>
 
-            <div id="game" class="box">
+            <div id="game" class="box col-md-4 text-center">
                 <div id="score-container">
-                    <p id="score">Clicks: 0</p>
+                    <p id="score" class="lead">Clicks: 0</p>
                 </div>
-                <div id="cow-container">
-                    <img id="cow" src="cow.png" alt="Click me!">
+                <div id="cow-container" class="mt-4">
+                    <img id="cow" src="Assets/Images/cow.png" alt="Click me!" class="img-fluid">
                 </div>
             </div>
 
-            <div id="settings" class="box">
-                <h2>Settings</h2>
-                <input type="text" id="username" placeholder="New Username">
-                <button onclick="updateUsername()">Change Username</button>
-                <p id="username-status"></p>
+            <div id="settings" class="box col-md-4">
+                <h2 class="h5">Settings</h2>
+                <input type="text" id="username" class="form-control mb-3" placeholder="New Username">
+                <button class="btn btn-outline-primary" onclick="updateUsername()">Change Username</button>
+                <p id="username-status" class="mt-2"></p>
             </div>
         </div>
     </div>
