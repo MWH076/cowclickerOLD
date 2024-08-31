@@ -20,7 +20,7 @@
         body {
             font-family: 'Arial', sans-serif;
             text-align: center;
-            background-color: #1c1c1c;
+            background-color: #1c1c2e;
             color: #f4f4f4;
             margin: 0;
             padding: 0;
@@ -40,7 +40,7 @@
         }
 
         header {
-            background-color: #2a2a2a;
+            background-color: #2a2a3e;
             width: 100%;
             padding: 15px;
             color: #f4f4f4;
@@ -68,7 +68,7 @@
         }
 
         header .logout-btn {
-            background-color: #005f73;
+            background-color: #ff90aa;
             color: #fff;
             padding: 10px 20px;
             border: none;
@@ -78,7 +78,7 @@
 
         #main-content {
             width: 100%;
-            background: #2e2e2e;
+            background: #2e2e42;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             border-radius: 10px;
             padding: 20px;
@@ -86,7 +86,7 @@
         }
 
         #score-container {
-            background-color: #005f73;
+            background-color: #ff90aa;
             color: #fff;
             padding: 15px;
             border-radius: 10px;
@@ -122,7 +122,7 @@
             list-style: none;
             padding: 0;
             margin: 0;
-            background: #1f1f1f;
+            background: #1f1f2f;
             border-radius: 10px;
             padding: 15px;
             box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.05);
@@ -131,7 +131,7 @@
         #leaderboard ul li {
             padding: 10px;
             margin-bottom: 10px;
-            background: #2a2a2a;
+            background: #2a2a3e;
             border-radius: 5px;
             font-size: 18px;
             color: #f4f4f4;
@@ -157,13 +157,13 @@
             border: 2px solid #ff90aa;
             margin-right: 10px;
             color: #fff;
-            background-color: #1f1f1f;
+            background-color: #1f1f2f;
         }
 
         #settings button {
             padding: 10px 20px;
             font-size: 16px;
-            background-color: #005f73;
+            background-color: #ff90aa;
             color: #fff;
             border: none;
             border-radius: 5px;
@@ -185,13 +185,13 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background-color: #1c1c1c;
+            background-color: #1c1c2e;
         }
 
         #login-button {
             font-size: 18px;
             padding: 15px 30px;
-            background-color: #005f73;
+            background-color: #ff90aa;
             color: white;
             border: none;
             border-radius: 10px;
@@ -200,7 +200,7 @@
         }
 
         #login-button:hover {
-            background-color: #003542;
+            background-color: #ff70a0;
         }
     </style>
 </head>
@@ -283,6 +283,9 @@
                 document.getElementById('app-container').classList.remove('hidden');
                 document.getElementById('user-name').innerText = `Welcome, ${user.displayName}`;
                 initGame();
+            } else {
+                document.getElementById('app-container').classList.add('hidden');
+                document.getElementById('login-container').classList.remove('hidden');
             }
         });
 
@@ -333,11 +336,12 @@
             const statusText = document.getElementById('username-status');
 
             if (newUsername) {
-                db.collection('users').where('username', '==', newUsername).get().then(snapshot => {
-                    if (snapshot.empty) {
+                db.collection('usernames').doc(newUsername).get().then(doc => {
+                    if (!doc.exists) {
                         db.collection('users').doc(user.uid).update({
                             username: newUsername
                         }).then(() => {
+                            db.collection('usernames').doc(newUsername).set({ uid: user.uid });
                             statusText.innerText = 'Username updated successfully!';
                             statusText.style.color = '#00FF00';
                             loadLeaderboard();
