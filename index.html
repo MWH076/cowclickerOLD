@@ -2,7 +2,6 @@
 <html lang="en">
 
 <head>
-    <!-- Meta -->
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta content="Cow Clicker" property="og:title" />
@@ -10,12 +9,10 @@
     <meta content="https://MWH076.github.io/cowclicker/" property="og:url" />
     <meta content="https://em-content.zobj.net/source/microsoft-teams/363/cow-face_1f42e.png" property="og:image" />
     <meta content="#FF90AA" data-react-helmet="true" name="theme-color" />
-
-    <!-- Tab -->
+    
     <link rel="icon" type="image/x-icon" href="cow.png">
     <title>Cow Clicker</title>
 
-    <!-- Styles -->
     <style>
         body {
             font-family: 'Arial', sans-serif;
@@ -206,9 +203,7 @@
 </head>
 
 <body>
-    <div id="login-container">
-        <button id="login-button">Login with Google</button>
-    </div>
+    <div id="login-container"><button id="login-button">Login with Google</button></div>
 
     <div id="app-container" class="hidden">
         <header>
@@ -218,15 +213,11 @@
                 <button class="logout-btn" onclick="logout()">Logout</button>
             </div>
         </header>
-
         <div id="main-content">
             <div id="score-container">
                 <p id="score">Clicks: 0</p>
             </div>
-
-            <div id="cow-container">
-                <img id="cow" src="cow.png" alt="Click me!">
-            </div>
+            <div id="cow-container"><img id="cow" src="cow.png" alt="Click me!"></div>
 
             <div id="leaderboard">
                 <h2>Leaderboard</h2>
@@ -234,9 +225,8 @@
             </div>
 
             <div id="settings">
-                <h2>Settings</h2>
-                <input type="text" id="username" placeholder="New Username">
-                <button onclick="updateUsername()">Change Username</button>
+                <h2>Settings</h2><input type="text" id="username" placeholder="New Username"><button
+                    onclick="updateUsername()">Change Username</button>
                 <p id="username-status"></p>
             </div>
         </div>
@@ -264,6 +254,7 @@
         let user;
         let clicks = 0;
 
+        // Login Button Handler
         document.getElementById('login-button').onclick = function () {
             auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then((result) => {
                 user = result.user;
@@ -271,11 +262,10 @@
                 document.getElementById('app-container').classList.remove('hidden');
                 document.getElementById('user-name').innerText = `Welcome, ${user.displayName}`;
                 initGame();
-            }).catch((error) => {
-                console.error("Error during sign in: ", error);
-            });
+            }).catch((error) => { console.error("Error during sign in: ", error); });
         };
 
+        // Auth State Change Listener
         auth.onAuthStateChanged((u) => {
             if (u) {
                 user = u;
@@ -288,30 +278,19 @@
 
         function initGame() {
             db.collection('users').doc(user.uid).get().then(doc => {
-                if (doc.exists) {
-                    clicks = doc.data().clicks || 0;
-                    updateScore();
-                }
-            }).catch(error => {
-                console.error("Error fetching user data: ", error);
-            });
+                if (doc.exists) { clicks = doc.data().clicks || 0; updateScore(); }
+            }).catch(error => { console.error("Error fetching user data: ", error); });
             loadLeaderboard();
         }
 
         document.getElementById('cow').onclick = function () {
             clicks++;
             updateScore();
-            db.collection('users').doc(user.uid).set({
-                username: user.displayName,
-                clicks: clicks
-            }).catch(error => {
-                console.error("Error updating clicks: ", error);
-            });
+            db.collection('users').doc(user.uid).set({ username: user.displayName, clicks: clicks })
+                .catch(error => { console.error("Error updating clicks: ", error); });
         };
 
-        function updateScore() {
-            document.getElementById('score').innerText = `Clicks: ${clicks}`;
-        }
+        function updateScore() { document.getElementById('score').innerText = `Clicks: ${clicks}`; }
 
         function loadLeaderboard() {
             db.collection('users').orderBy('clicks', 'desc').limit(10).get().then(snapshot => {
@@ -323,9 +302,7 @@
                     listItem.innerText = `${data.username}: ${data.clicks}`;
                     leaderboardList.appendChild(listItem);
                 });
-            }).catch(error => {
-                console.error("Error loading leaderboard: ", error);
-            });
+            }).catch(error => { console.error("Error loading leaderboard: ", error); });
         }
 
         function updateUsername() {
@@ -333,27 +310,28 @@
             const statusText = document.getElementById('username-status');
 
             if (newUsername) {
-                db.collection('users').where('username', '==', newUsername).get().then(snapshot => {
-                    if (snapshot.empty) {
-                        db.collection('users').doc(user.uid).update({
-                            username: newUsername
-                        }).then(() => {
-                            statusText.innerText = 'Username updated successfully!';
-                            statusText.style.color = '#00FF00';
-                            loadLeaderboard();
-                        }).catch(error => {
-                            console.error("Error updating username: ", error);
-                            statusText.innerText = 'Error updating username.';
-                            statusText.style.color = '#FF0000';
-                        });
+                const usernameRef = db.collection('usernames').doc(newUsername);
+                db.runTransaction((transaction) => {
+                    return transaction.get(usernameRef).then((doc) => {
+                        if (doc.exists) {
+                            throw new Error("Username already taken");
+                        } else {
+                            transaction.set(usernameRef, { userId: user.uid });
+                            transaction.update(db.collection('users').doc(user.uid), { username: newUsername });
+                        }
+                    });
+                }).then(() => {
+                    statusText.innerText = 'Username updated successfully!';
+                    statusText.style.color = '#00FF00';
+                    loadLeaderboard();
+                }).catch((error) => {
+                    if (error.message === "Username already taken") {
+                        statusText.innerText = error.message;
                     } else {
-                        statusText.innerText = 'Username already taken.';
-                        statusText.style.color = '#FF0000';
+                        statusText.innerText = 'Error checking username availability.';
                     }
-                }).catch(error => {
-                    console.error("Error checking username: ", error);
-                    statusText.innerText = 'Error checking username availability.';
                     statusText.style.color = '#FF0000';
+                    console.error("Error checking username: ", error);
                 });
             } else {
                 statusText.innerText = 'Please enter a valid username.';
@@ -365,9 +343,7 @@
             auth.signOut().then(() => {
                 document.getElementById('app-container').classList.add('hidden');
                 document.getElementById('login-container').classList.remove('hidden');
-            }).catch((error) => {
-                console.error("Error during sign out: ", error);
-            });
+            }).catch((error) => { console.error("Error during sign out: ", error); });
         }
     </script>
 </body>
