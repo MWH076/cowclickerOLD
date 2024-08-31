@@ -69,7 +69,7 @@ document.getElementById('cow').onclick = function () {
 };
 
 function updateScore() {
-    document.getElementById('score').innerText = `Clicks: ${clicks}`;
+    document.getElementById('score').innerText = `${clicks}`;
 }
 
 function loadLeaderboard() {
