@@ -18,25 +18,25 @@
     <!-- Styles -->
     <style>
         body {
-            font-family: 'Arial', sans-serif;
+            font-family: 'Roboto', sans-serif;
             text-align: center;
-            background-color: #1c1c2e;
-            color: #f4f4f4;
+            background-color: #2a2a3e;
+            color: #ffffff;
             margin: 0;
             padding: 0;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            height: 100vh;
+            min-height: 100vh;
             overflow: hidden;
         }
 
         header {
-            background-color: #2a2a3e;
+            background-color: #1c1c2e;
             width: 100%;
             padding: 10px 20px;
-            color: #f4f4f4;
+            color: #ffffff;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
             display: flex;
             justify-content: space-between;
@@ -56,8 +56,8 @@
         }
 
         header .logout-btn {
-            background-color: #ff90aa;
-            color: #fff;
+            background-color: #ff5c5c;
+            color: #ffffff;
             padding: 8px 16px;
             border: none;
             border-radius: 5px;
@@ -69,11 +69,13 @@
             justify-content: center;
             align-items: center;
             height: 100vh;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         #login-button {
-            background-color: #ff90aa;
-            color: #fff;
+            background-color: #ff5c5c;
+            color: #ffffff;
             padding: 15px 30px;
             border: none;
             border-radius: 5px;
@@ -83,7 +85,7 @@
         }
 
         #login-button:hover {
-            background-color: #e67f98;
+            background-color: #e14e4e;
         }
 
         #app-container {
@@ -98,31 +100,31 @@
         }
 
         #content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: 20px;
+            display: grid;
+            grid-template-columns: 1fr;
+            grid-gap: 20px;
             width: 100%;
+            max-width: 800px;
             box-sizing: border-box;
         }
 
         .box {
             padding: 20px;
             box-sizing: border-box;
-            background-color: #2e2e42;
+            background-color: #1f1f2f;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             border-radius: 10px;
-            width: 100%;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
+            width: 100%;
         }
 
         #leaderboard h2,
         #settings h2 {
             margin-bottom: 10px;
-            color: #ff90aa;
+            color: #ff5c5c;
             font-size: 20px;
         }
 
@@ -131,7 +133,7 @@
             padding: 0;
             margin: 0;
             width: 100%;
-            background: #1f1f2f;
+            background: #2a2a3e;
             border-radius: 10px;
             padding: 15px;
             box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.05);
@@ -143,15 +145,15 @@
         #leaderboard ul li {
             padding: 10px;
             margin-bottom: 5px;
-            background: #2a2a3e;
+            background: #1c1c2e;
             border-radius: 5px;
             font-size: 16px;
-            color: #f4f4f4;
+            color: #ffffff;
         }
 
         #refresh-leaderboard-btn {
-            background-color: #ff90aa;
-            color: #fff;
+            background-color: #ff5c5c;
+            color: #ffffff;
             padding: 8px;
             border: none;
             border-radius: 5px;
@@ -161,18 +163,14 @@
         }
 
         #score-container {
-            background-color: #ff90aa;
-            color: #fff;
+            background-color: #ff5c5c;
+            color: #ffffff;
             padding: 15px;
             border-radius: 10px;
             font-size: 24px;
             margin-bottom: 20px;
             text-align: center;
             width: 100%;
-        }
-
-        #cow-container {
-            margin: 20px 0;
         }
 
         #cow-container img {
@@ -190,10 +188,10 @@
             padding: 10px;
             font-size: 16px;
             border-radius: 5px;
-            border: 2px solid #ff90aa;
+            border: 2px solid #ff5c5c;
             margin-right: 10px;
-            color: #fff;
-            background-color: #1f1f2f;
+            color: #ffffff;
+            background-color: #2a2a3e;
             width: calc(100% - 120px);
             box-sizing: border-box;
         }
@@ -201,8 +199,8 @@
         #settings button {
             padding: 10px 20px;
             font-size: 16px;
-            background-color: #ff90aa;
-            color: #fff;
+            background-color: #ff5c5c;
+            color: #ffffff;
             border: none;
             border-radius: 5px;
             cursor: pointer;
@@ -212,14 +210,14 @@
         #settings p {
             margin-top: 10px;
             font-size: 14px;
-            color: #f4f4f4;
+            color: #ffffff;
             text-align: left;
             width: 100%;
         }
 
         @media (max-width: 768px) {
             #content {
-                flex-direction: column;
+                grid-template-columns: 1fr;
                 gap: 10px;
             }
 
