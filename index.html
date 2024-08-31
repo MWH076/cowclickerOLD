@@ -31,7 +31,7 @@
         }
 
         #app-container {
-            display: flex;
+            display: none;
             flex-direction: column;
             align-items: center;
             padding: 20px;
@@ -176,10 +176,6 @@
             color: #f4f4f4;
         }
 
-        .hidden {
-            display: none;
-        }
-
         #login-container {
             display: flex;
             justify-content: center;
@@ -210,7 +206,7 @@
         <button id="login-button">Login with Google</button>
     </div>
 
-    <div id="app-container" class="hidden">
+    <div id="app-container">
         <header>
             <h1>Cow Clicker</h1>
             <div class="user-info">
@@ -267,8 +263,7 @@
         document.getElementById('login-button').onclick = function () {
             auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then((result) => {
                 user = result.user;
-                document.getElementById('login-container').classList.add('hidden');
-                document.getElementById('app-container').classList.remove('hidden');
+                toggleUI(true);
                 document.getElementById('user-name').innerText = `Welcome, ${user.displayName}`;
                 initGame();
             }).catch((error) => {
@@ -279,15 +274,18 @@
         auth.onAuthStateChanged((u) => {
             if (u) {
                 user = u;
-                document.getElementById('login-container').classList.add('hidden');
-                document.getElementById('app-container').classList.remove('hidden');
+                toggleUI(true);
                 document.getElementById('user-name').innerText = `Welcome, ${user.displayName}`;
                 initGame();
             } else {
-                document.getElementById('app-container').classList.add('hidden');
-                document.getElementById('login-container').classList.remove('hidden');
+                toggleUI(false);
             }
         });
+
+        function toggleUI(isLoggedIn) {
+            document.getElementById('login-container').style.display = isLoggedIn ? 'none' : 'flex';
+            document.getElementById('app-container').style.display = isLoggedIn ? 'flex' : 'none';
+        }
 
         function initGame() {
             db.collection('users').doc(user.uid).get().then(doc => {
@@ -336,27 +334,15 @@
             const statusText = document.getElementById('username-status');
 
             if (newUsername) {
-                db.collection('usernames').doc(newUsername).get().then(doc => {
-                    if (!doc.exists) {
-                        db.collection('users').doc(user.uid).update({
-                            username: newUsername
-                        }).then(() => {
-                            db.collection('usernames').doc(newUsername).set({ uid: user.uid });
-                            statusText.innerText = 'Username updated successfully!';
-                            statusText.style.color = '#00FF00';
-                            loadLeaderboard();
-                        }).catch(error => {
-                            console.error("Error updating username: ", error);
-                            statusText.innerText = 'Error updating username.';
-                            statusText.style.color = '#FF0000';
-                        });
-                    } else {
-                        statusText.innerText = 'Username already taken.';
-                        statusText.style.color = '#FF0000';
-                    }
+                db.collection('users').doc(user.uid).update({
+                    username: newUsername
+                }).then(() => {
+                    statusText.innerText = 'Username updated successfully!';
+                    statusText.style.color = '#00FF00';
+                    loadLeaderboard();
                 }).catch(error => {
-                    console.error("Error checking username: ", error);
-                    statusText.innerText = 'Error checking username availability.';
+                    console.error("Error updating username: ", error);
+                    statusText.innerText = 'Error updating username.';
                     statusText.style.color = '#FF0000';
                 });
             } else {
@@ -367,8 +353,7 @@
 
         function logout() {
             auth.signOut().then(() => {
-                document.getElementById('app-container').classList.add('hidden');
-                document.getElementById('login-container').classList.remove('hidden');
+                toggleUI(false);
             }).catch((error) => {
                 console.error("Error during sign out: ", error);
             });
