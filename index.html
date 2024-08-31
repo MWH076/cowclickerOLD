@@ -25,21 +25,10 @@
             margin: 0;
             padding: 0;
             display: flex;
-            justify-content: center;
+            flex-direction: column;
             align-items: center;
             height: 100vh;
             overflow: hidden;
-        }
-
-        #app-container {
-            display: none;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            max-width: 600px;
-            width: 100%;
-            height: 100vh;
-            box-sizing: border-box;
         }
 
         header {
@@ -48,7 +37,6 @@
             padding: 15px;
             color: #f4f4f4;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
-            margin-bottom: 20px;
             text-align: left;
             display: flex;
             justify-content: space-between;
@@ -79,53 +67,41 @@
             cursor: pointer;
         }
 
-        #main-content {
+        #app-container {
+            display: none;
+            flex: 1;
             width: 100%;
-            background: #2e2e42;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
-            padding: 20px;
             box-sizing: border-box;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            justify-content: space-between;
-            height: calc(100% - 90px);
         }
 
-        #score-container {
-            background-color: #ff90aa;
-            color: #fff;
-            padding: 15px;
-            border-radius: 10px;
-            font-size: 20px;
-            margin-bottom: 10px;
-        }
-
-        #cow-container {
-            margin: 20px 0;
-        }
-
-        #cow-container img {
+        #content {
+            flex: 1;
+            display: flex;
             width: 100%;
-            max-width: 200px;
-            cursor: pointer;
-            transition: transform 0.1s;
+            height: calc(100% - 90px);
+            box-sizing: border-box;
         }
 
-        #cow-container img:active {
-            transform: scale(0.95);
+        .box {
+            flex: 1;
+            padding: 20px;
+            box-sizing: border-box;
+            overflow-y: auto;
         }
 
         #leaderboard {
-            margin: 20px 0;
-            width: 100%;
-            text-align: left;
+            background: #2e2e42;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            margin-right: 10px;
         }
 
         #leaderboard h2 {
             margin-bottom: 10px;
             color: #ff90aa;
+            text-align: left;
         }
 
         #leaderboard ul {
@@ -136,6 +112,7 @@
             border-radius: 10px;
             padding: 15px;
             box-shadow: inset 0 4px 8px rgba(0, 0, 0, 0.05);
+            text-align: left;
         }
 
         #leaderboard ul li {
@@ -159,13 +136,49 @@
             border-radius: 5px;
             cursor: pointer;
             margin-top: 10px;
-            display: block;
             width: 100%;
         }
 
-        #settings {
-            margin-top: 10px;
+        #game {
+            background: #2e2e42;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            margin: 0 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #score-container {
+            background-color: #ff90aa;
+            color: #fff;
+            padding: 15px;
+            border-radius: 10px;
+            font-size: 20px;
+            margin-bottom: 20px;
+        }
+
+        #cow-container {
+            margin: 20px 0;
+        }
+
+        #cow-container img {
             width: 100%;
+            max-width: 200px;
+            cursor: pointer;
+            transition: transform 0.1s;
+        }
+
+        #cow-container img:active {
+            transform: scale(0.95);
+        }
+
+        #settings {
+            background: #2e2e42;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            margin-left: 10px;
             text-align: left;
         }
 
@@ -183,6 +196,7 @@
             color: #fff;
             background-color: #1f1f2f;
             width: calc(100% - 120px);
+            box-sizing: border-box;
         }
 
         #settings button {
@@ -202,27 +216,25 @@
             color: #f4f4f4;
         }
 
-        #login-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            background-color: #1c1c2e;
-        }
+        @media (max-width: 768px) {
+            #content {
+                flex-direction: column;
+            }
 
-        #login-button {
-            font-size: 18px;
-            padding: 15px 30px;
-            background-color: #ff90aa;
-            color: white;
-            border: none;
-            border-radius: 10px;
-            cursor: pointer;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-        }
+            .box {
+                margin-bottom: 10px;
+            }
 
-        #login-button:hover {
-            background-color: #ff70a0;
+            #leaderboard,
+            #game,
+            #settings {
+                margin: 0;
+                width: 100%;
+            }
+
+            #game {
+                margin: 10px 0;
+            }
         }
     </style>
 </head>
@@ -241,22 +253,23 @@
             </div>
         </header>
 
-        <div id="main-content">
-            <div id="score-container">
-                <p id="score">Clicks: 0</p>
-            </div>
-
-            <div id="cow-container">
-                <img id="cow" src="cow.png" alt="Click me!">
-            </div>
-
-            <div id="leaderboard">
+        <div id="content">
+            <div id="leaderboard" class="box">
                 <h2>Leaderboard</h2>
                 <ul id="leaderboard-list"></ul>
                 <button id="refresh-leaderboard-btn" onclick="loadLeaderboard()">Refresh Leaderboard</button>
             </div>
 
-            <div id="settings">
+            <div id="game" class="box">
+                <div id="score-container">
+                    <p id="score">Clicks: 0</p>
+                </div>
+                <div id="cow-container">
+                    <img id="cow" src="cow.png" alt="Click me!">
+                </div>
+            </div>
+
+            <div id="settings" class="box">
                 <h2>Settings</h2>
                 <input type="text" id="username" placeholder="New Username">
                 <button onclick="updateUsername()">Change Username</button>
