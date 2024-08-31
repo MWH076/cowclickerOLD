@@ -100,23 +100,29 @@
                             <figure class="mx-auto">
                                 <div class="w-12 mx-auto">
                                     <div id="cow-container">
-                                        <img id="cow" src="Assets/Images/cow.png" alt="Click me!" class="w-full img-fluid">
+                                        <img id="cow" src="Assets/Images/cow.png" alt="Click me!"
+                                            class="w-full img-fluid">
                                     </div>
                                 </div>
                             </figure>
                             <hr class="my-7">
                             <div class="align-items-center">
-                                    <div id="score-container">
-                                        <span class="d-block h6 text-heading mb-0" id="score">0</span> 
-                                    </div>
-                                    <span class="d-block text-sm text-muted">Clicks</span>
+                                <div id="score-container">
+                                    <span class="d-block h6 text-heading mb-0" id="score">0</span>
+                                </div>
+                                <span class="d-block text-sm text-muted">Clicks</span>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div class="col-xl-4">
                     <div class="card h-full">
-
+                        <div id="leaderboard" class="box col-md-4">
+                            <h2 class="h5">Leaderboard</h2>
+                            <ul id="leaderboard-list" class="list-group list-group-flush"></ul>
+                            <button id="refresh-leaderboard-btn" class="btn btn-outline-primary mt-3"
+                                onclick="loadLeaderboard()">Refresh Leaderboard</button>
+                        </div>
                     </div>
                 </div>
             </div>
