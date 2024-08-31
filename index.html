@@ -9,7 +9,7 @@
     <meta content="https://MWH076.github.io/cowclicker/" property="og:url" />
     <meta content="https://em-content.zobj.net/source/microsoft-teams/363/cow-face_1f42e.png" property="og:image" />
     <meta content="#FF90AA" data-react-helmet="true" name="theme-color" />
-    
+
     <link rel="icon" type="image/x-icon" href="cow.png">
     <title>Cow Clicker</title>
 
@@ -302,7 +302,9 @@
                     listItem.innerText = `${data.username}: ${data.clicks}`;
                     leaderboardList.appendChild(listItem);
                 });
-            }).catch(error => { console.error("Error loading leaderboard: ", error); });
+            }).catch(error => {
+                console.error("Error loading leaderboard: ", error);
+            });
         }
 
         function updateUsername() {
