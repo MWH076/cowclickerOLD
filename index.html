@@ -40,31 +40,54 @@
         #settings {
             margin-top: 30px;
         }
-    </style>
 
-    <!-- Scripts -->
-    <!-- None for now :D -->
+        .hidden {
+            display: none;
+        }
+
+        #login-button {
+            font-size: 18px;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        #login-button:hover {
+            background-color: #45a049;
+        }
+    </style>
 </head>
 
 <body>
-    <h1>Cow Clicker</h1>
-    <p id="score">Clicks: 0</p>
-    <img id="cow" src="cow.png" alt="Click me!">
-    
-    <div id="leaderboard">
-        <h2>Leaderboard</h2>
-        <ul id="leaderboard-list"></ul>
+    <div id="login-container">
+        <button id="login-button">Login with Google</button>
     </div>
 
-    <div id="settings">
-        <h2>Settings</h2>
-        <input type="text" id="username" placeholder="New Username">
-        <button onclick="updateUsername()">Change Username</button>
+    <div id="loading" class="hidden">Loading, please wait...</div>
+
+    <div id="main-content" class="hidden">
+        <h1>Cow Clicker</h1>
+        <p id="score">Clicks: 0</p>
+        <img id="cow" src="cow.png" alt="Click me!">
+
+        <div id="leaderboard">
+            <h2>Leaderboard</h2>
+            <ul id="leaderboard-list"></ul>
+        </div>
+
+        <div id="settings">
+            <h2>Settings</h2>
+            <input type="text" id="username" placeholder="New Username">
+            <button onclick="updateUsername()">Change Username</button>
+        </div>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
 
     <script>
         const firebaseConfig = {
@@ -84,12 +107,25 @@
         let user;
         let clicks = 0;
 
+        document.getElementById('login-button').onclick = function () {
+            auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then((result) => {
+                user = result.user;
+                document.getElementById('login-container').style.display = 'none';
+                document.getElementById('loading').classList.remove('hidden');
+                document.getElementById('main-content').classList.remove('hidden');
+                initGame();
+            }).catch((error) => {
+                console.error("Error during sign in: ", error);
+            });
+        };
+
         auth.onAuthStateChanged((u) => {
             if (u) {
                 user = u;
+                document.getElementById('login-container').style.display = 'none';
+                document.getElementById('loading').classList.remove('hidden');
+                document.getElementById('main-content').classList.remove('hidden');
                 initGame();
-            } else {
-                auth.signInWithPopup(new firebase.auth.GoogleAuthProvider());
             }
         });
 
