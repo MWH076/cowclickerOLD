@@ -285,6 +285,7 @@
 
         let user;
         let clicks = 0;
+        let username;
 
         document.getElementById('login-button').onclick = function () {
             auth.signInWithPopup(new firebase.auth.GoogleAuthProvider()).then((result) => {
@@ -317,6 +318,7 @@
             db.collection('users').doc(user.uid).get().then(doc => {
                 if (doc.exists) {
                     clicks = doc.data().clicks || 0;
+                    username = doc.data().username || user.displayName;
                     updateScore();
                 }
             }).catch(error => {
@@ -329,7 +331,7 @@
             clicks++;
             updateScore();
             db.collection('users').doc(user.uid).set({
-                username: user.displayName,
+                username: username,
                 clicks: clicks
             }).catch(error => {
                 console.error("Error updating clicks: ", error);
@@ -377,6 +379,7 @@
                     db.collection('users').doc(user.uid).update({
                         username: newUsername
                     }).then(() => {
+                        username = newUsername;
                         statusText.innerText = 'Username updated successfully!';
                         statusText.style.color = '#00FF00';
                         loadLeaderboard();
