@@ -313,13 +313,22 @@
 
             if (newUsername) {
                 const usernameRef = db.collection('usernames').doc(newUsername);
+                const userRef = db.collection('users').doc(user.uid);
+
                 db.runTransaction((transaction) => {
                     return transaction.get(usernameRef).then((doc) => {
                         if (doc.exists) {
                             throw new Error("Username already taken");
                         } else {
                             transaction.set(usernameRef, { userId: user.uid });
-                            transaction.update(db.collection('users').doc(user.uid), { username: newUsername });
+
+                            return transaction.get(userRef).then((userDoc) => {
+                                if (!userDoc.exists) {
+                                    transaction.set(userRef, { username: newUsername, clicks: 0 });
+                                } else {
+                                    transaction.update(userRef, { username: newUsername });
+                                }
+                            });
                         }
                     });
                 }).then(() => {
